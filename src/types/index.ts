@@ -1,6 +1,7 @@
 export interface UIOption {
+  id?: string; // Unique identifier for stable drag and drop
   label: string;
-  inputType: 'Textbox' | 'Checkbox' | 'Button' | 'Div';
+  inputType: 'Textbox' | 'Checkbox' | 'Button' | 'Div' | 'Image';
   isVisible: boolean;
   validation?: {
     required?: boolean;

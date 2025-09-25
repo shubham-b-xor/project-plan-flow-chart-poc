@@ -2,6 +2,20 @@ import { NodeConfig } from '../types';
 
 export const nodeConfigs: NodeConfig[] = [
   {
+    id: 'blank',
+    label: 'New Page',
+    type: 'main',
+    description: 'This is a blank page with no predefined UI elements.',
+    uiOptions: [
+      {
+        label: 'Custom Content',
+        inputType: 'Div',
+        isVisible: true,
+        uiText: 'Add your custom content here'
+      },
+    ]
+  },
+  {
     id: 'login',
     label: 'Login',
     type: 'auth',

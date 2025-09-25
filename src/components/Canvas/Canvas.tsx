@@ -176,7 +176,7 @@ const Canvas: React.FC<CanvasProps> = ({ sidebarWidth }) => {
       ref={reactFlowWrapper}
       sx={{
         width: '100%',
-        height: '98vh',
+        height: '92vh',
         bgcolor: 'grey.50'
       }}
     >
@@ -214,7 +214,7 @@ const Canvas: React.FC<CanvasProps> = ({ sidebarWidth }) => {
             variant={BackgroundVariant.Dots} 
             gap={12} 
             size={1} 
-            color="#e0e0e0"
+            color="#838282ff"
           />
         </ReactFlow>
       </ReactFlowProvider>

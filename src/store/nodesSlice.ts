@@ -74,6 +74,61 @@ const nodesSlice = createSlice({
       }
     },
     
+    reorderNodeUIOptions: (state, action: PayloadAction<{
+      nodeId: string;
+      activeId: string;
+      overId: string;
+    }>) => {
+      const { nodeId, activeId, overId } = action.payload;
+      const node = state.nodes.find((n: any) => n.config.id === nodeId);
+      if (node && node.config.uiOptions) {
+        const activeIndex = node.config.uiOptions.findIndex((option: UIOption) => 
+          option.id === activeId || `${nodeId}-${node.config.uiOptions.indexOf(option)}` === activeId
+        );
+        const overIndex = node.config.uiOptions.findIndex((option: UIOption) => 
+          option.id === overId || `${nodeId}-${node.config.uiOptions.indexOf(option)}` === overId
+        );
+        
+        if (activeIndex !== -1 && overIndex !== -1 && activeIndex !== overIndex) {
+          const [movedOption] = node.config.uiOptions.splice(activeIndex, 1);
+          node.config.uiOptions.splice(overIndex, 0, movedOption);
+        }
+      }
+    },
+    
+    addNodeUIOption: (state, action: PayloadAction<{
+      nodeId: string;
+      uiOption?: Partial<UIOption>;
+    }>) => {
+      const { nodeId, uiOption } = action.payload;
+      const node = state.nodes.find((n: any) => n.config.id === nodeId);
+      if (node) {
+        const timestamp = Date.now();
+        const random = Math.random().toString(36).substr(2, 9);
+        const newOption: UIOption = {
+          id: `${nodeId}-option-${timestamp}-${random}`,
+          label: uiOption?.label || 'New Option',
+          inputType: uiOption?.inputType || 'Textbox',
+          isVisible: uiOption?.isVisible ?? true,
+          uiText: uiOption?.uiText || '',
+          value: uiOption?.value || '',
+          validation: uiOption?.validation || { required: false }
+        };
+        node.config.uiOptions.push(newOption);
+      }
+    },
+    
+    removeNodeUIOption: (state, action: PayloadAction<{
+      nodeId: string;
+      optionIndex: number;
+    }>) => {
+      const { nodeId, optionIndex } = action.payload;
+      const node = state.nodes.find((n: any) => n.config.id === nodeId);
+      if (node && node.config.uiOptions[optionIndex]) {
+        node.config.uiOptions.splice(optionIndex, 1);
+      }
+    },
+    
     toggleNodeDescription: (state, action: PayloadAction<string>) => {
       const node = state.nodes.find((n: any) => n.config.id === action.payload);
       if (node) {
@@ -101,6 +156,9 @@ export const {
   updateNodePosition,
   updateNodeUIOption,
   updateNodeUIOptionProperty,
+  reorderNodeUIOptions,
+  addNodeUIOption,
+  removeNodeUIOption,
   toggleNodeDescription,
   setDraggedNodeType,
   clearNodes,

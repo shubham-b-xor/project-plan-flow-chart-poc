@@ -1,6 +1,7 @@
 import React from 'react';
 import { TextField, Checkbox, Button, Typography, FormControlLabel } from '@mui/material';
 import { UIOption } from '../../types';
+import icon from '../../assets/svg/undraw_web-app_141a.svg';
 
 interface UIOptionRendererProps {
   option: UIOption;
@@ -34,8 +35,10 @@ export const UIOptionRenderer: React.FC<UIOptionRendererProps> = ({
     case 'Textbox':
       return (
         <TextField
+          variant={'standard'}
           label={option.label}
-          placeholder={option.uiText}
+        //   placeholder={option.uiText}
+          placeholder={''}
           value={option.value as string || ''}
           onChange={handleChange}
           disabled={disabled}
@@ -97,6 +100,13 @@ export const UIOptionRenderer: React.FC<UIOptionRendererProps> = ({
         >
           {option.uiText || option.label}
         </Typography>
+      );
+
+    case 'Image':
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+          <img width="50%" height="50%" src={icon} alt={icon} />
+        </div>
       );
 
     default:

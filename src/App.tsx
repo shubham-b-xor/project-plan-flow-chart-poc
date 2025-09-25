@@ -32,7 +32,7 @@ function App() {
             component="main"
             sx={{
               flexGrow: 1,
-              height: '100vh',
+              height: '92vh',
               overflow: 'hidden',
               marginTop: '64px', // AppBar height
               // marginLeft: sidebarOpen ? `${SIDEBAR_WIDTH}px` : 0,
