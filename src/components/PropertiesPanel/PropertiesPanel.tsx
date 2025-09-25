@@ -422,19 +422,7 @@ const PropertiesPanel: React.FC = () => {
             <EmptyState message="Select a node or edge to view its properties" />
           )}
         </Box>
-        <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
-          <Button
-            variant="contained"
-            startIcon={<Save />}
-            fullWidth
-            onClick={() => {
-              // Save functionality could be implemented here
-              console.log('Save properties');
-            }}
-          >
-            Save Changes
-          </Button>
-        </Box>
+        
       </Drawer>
       <ConfirmDialog
         open={confirmDialog.open}
