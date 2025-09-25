@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     AppBar,
     Toolbar,
@@ -11,6 +11,7 @@ import {
     MenuItem,
     // Chip
 } from '@mui/material';
+import ConfirmDialog from '../common/ConfirmDialog';
 import {
     FileDownload,
     FileUpload,
@@ -169,14 +170,18 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, sidebarOpen }) => {
         }
     };
 
+
+    const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+
     const handleNewProject = () => {
         if (isDirty) {
-            const confirmNew = window.confirm(
-                'You have unsaved changes. Are you sure you want to create a new project?'
-            );
-            if (!confirmNew) return;
+            setConfirmDialogOpen(true);
+            return;
         }
+        doNewProject();
+    };
 
+    const doNewProject = () => {
         dispatch(resetProject());
         dispatch(clearNodes());
         dispatch(clearEdges());
@@ -190,137 +195,136 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, sidebarOpen }) => {
     // };
 
     return (
-        <AppBar
-            position="fixed"
-            sx={{
-                zIndex: (theme) => theme.zIndex.drawer + 1,
-                bgcolor: 'background.paper',
-                color: 'text.primary',
-                boxShadow: 1,
-                borderBottom: '1px solid',
-                borderColor: 'divider'
-            }}
-        >
-            <Toolbar>
-                <IconButton
-                    color="inherit"
-                    aria-label="toggle sidebar"
-                    onClick={onMenuToggle}
-                    edge="start"
-                    sx={{ mr: 2 }}
-                >
-                    <MenuIcon />
-                </IconButton>
-
-                <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{
-                        flexGrow: 0,
-                        mr: 3,
-                        fontWeight: 'bold',
-                        color: 'primary.main'
-                    }}
-                >
-                    Project Planner POC
-                </Typography>
-
-                <TextField
-                    label="Project Name"
-                    value={projectName}
-                    onChange={handleProjectNameChange}
-                    size="small"
-                    sx={{
-                        width: 250,
-                        mr: 2,
-                        '& .MuiOutlinedInput-root': {
-                            bgcolor: 'background.default'
-                        }
-                    }}
-                />
-
-                {/* {isDirty && (
-          <Chip 
-            label="Unsaved" 
-            color="warning" 
-            size="small" 
-            sx={{ mr: 2 }} 
-          />
-        )} */}
-
-                <Box sx={{ flexGrow: 1 }} />
-
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {/* <Typography variant="caption" color="text.secondary" sx={{ mr: 2 }}>
-            {formatLastSaved(lastSaved)}
-          </Typography> */}
-
-                    <Button
-                        startIcon={<FiberNew />}
-                        onClick={handleNewProject}
-                        size="small"
-                        variant="outlined"
+        <>
+            <AppBar
+                position="fixed"
+                sx={{
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                    bgcolor: 'background.paper',
+                    color: 'text.primary',
+                    boxShadow: 1,
+                    borderBottom: '1px solid',
+                    borderColor: 'divider'
+                }}
+            >
+                <Toolbar>
+                    <IconButton
+                        color="inherit"
+                        aria-label="toggle sidebar"
+                        onClick={onMenuToggle}
+                        edge="start"
+                        sx={{ mr: 2 }}
                     >
-                        New
-                    </Button>
+                        <MenuIcon />
+                    </IconButton>
 
-                    <Button
-                        startIcon={<FileUpload />}
-                        onClick={(e) => setImportMenuAnchor(e.currentTarget)}
-                        size="small"
-                        variant="outlined"
+                    <Typography
+                        variant="h6"
+                        component="div"
+                        sx={{
+                            flexGrow: 0,
+                            mr: 3,
+                            fontWeight: 'bold',
+                            color: 'primary.main'
+                        }}
                     >
-                        Import
-                    </Button>
+                        Project Planner POC
+                    </Typography>
 
-                    <Button
-                        startIcon={<FileDownload />}
-                        onClick={(e) => setExportMenuAnchor(e.currentTarget)}
+                    <TextField
+                        label="Project Name"
+                        value={projectName}
+                        onChange={handleProjectNameChange}
                         size="small"
-                        variant="outlined"
+                        sx={{
+                            width: 250,
+                            mr: 2,
+                            '& .MuiOutlinedInput-root': {
+                                bgcolor: 'background.default'
+                            }
+                        }}
+                    />
+
+                    <Box sx={{ flexGrow: 1 }} />
+
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Button
+                            startIcon={<FiberNew />}
+                            onClick={handleNewProject}
+                            size="small"
+                            variant="outlined"
+                        >
+                            New
+                        </Button>
+
+                        <Button
+                            startIcon={<FileUpload />}
+                            onClick={(e) => setImportMenuAnchor(e.currentTarget)}
+                            size="small"
+                            variant="outlined"
+                        >
+                            Import
+                        </Button>
+
+                        <Button
+                            startIcon={<FileDownload />}
+                            onClick={(e) => setExportMenuAnchor(e.currentTarget)}
+                            size="small"
+                            variant="outlined"
+                        >
+                            Export
+                        </Button>
+                    </Box>
+
+                    {/* Export Menu */}
+                    <Menu
+                        anchorEl={exportMenuAnchor}
+                        open={Boolean(exportMenuAnchor)}
+                        onClose={() => setExportMenuAnchor(null)}
                     >
-                        Export
-                    </Button>
-                </Box>
+                        <MenuItem onClick={handleExportJSON}>
+                            <Description sx={{ mr: 1 }} />
+                            Export as JSON
+                        </MenuItem>
+                        <MenuItem onClick={handleExportImage}>
+                            <Image sx={{ mr: 1 }} />
+                            Export as Image
+                        </MenuItem>
+                    </Menu>
 
-                {/* Export Menu */}
-                <Menu
-                    anchorEl={exportMenuAnchor}
-                    open={Boolean(exportMenuAnchor)}
-                    onClose={() => setExportMenuAnchor(null)}
-                >
-                    <MenuItem onClick={handleExportJSON}>
-                        <Description sx={{ mr: 1 }} />
-                        Export as JSON
-                    </MenuItem>
-                    <MenuItem onClick={handleExportImage}>
-                        <Image sx={{ mr: 1 }} />
-                        Export as Image
-                    </MenuItem>
-                </Menu>
+                    {/* Import Menu */}
+                    <Menu
+                        anchorEl={importMenuAnchor}
+                        open={Boolean(importMenuAnchor)}
+                        onClose={() => setImportMenuAnchor(null)}
+                    >
+                        <MenuItem onClick={() => fileInputRef.current?.click()}>
+                            <Description sx={{ mr: 1 }} />
+                            Import JSON Project
+                        </MenuItem>
+                    </Menu>
 
-                {/* Import Menu */}
-                <Menu
-                    anchorEl={importMenuAnchor}
-                    open={Boolean(importMenuAnchor)}
-                    onClose={() => setImportMenuAnchor(null)}
-                >
-                    <MenuItem onClick={() => fileInputRef.current?.click()}>
-                        <Description sx={{ mr: 1 }} />
-                        Import JSON Project
-                    </MenuItem>
-                </Menu>
-
-                {/* Hidden file input */}
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImportJSON}
-                    accept=".json"
-                    style={{ display: 'none' }}
-                />
-            </Toolbar>
-        </AppBar>
+                    {/* Hidden file input */}
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleImportJSON}
+                        accept=".json"
+                        style={{ display: 'none' }}
+                    />
+                </Toolbar>
+            </AppBar>
+            <ConfirmDialog
+                open={confirmDialogOpen}
+                title="Unsaved Changes"
+                message="You have unsaved changes. Are you sure you want to create a new project?"
+                onClose={() => setConfirmDialogOpen(false)}
+                onConfirm={() => {
+                    setConfirmDialogOpen(false);
+                    doNewProject();
+                }}
+            />
+        </>
     );
 };
 
