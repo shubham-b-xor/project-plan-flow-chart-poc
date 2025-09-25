@@ -1,15 +1,16 @@
 {
   "files": {
     "main.css": "/project-plan-flow-chart-poc/static/css/main.616ba065.css",
-    "main.js": "/project-plan-flow-chart-poc/static/js/main.7d43a47a.js",
+    "main.js": "/project-plan-flow-chart-poc/static/js/main.db9c1650.js",
     "static/js/453.e3fe0cc6.chunk.js": "/project-plan-flow-chart-poc/static/js/453.e3fe0cc6.chunk.js",
+    "static/media/undraw_web-app_141a.svg": "/project-plan-flow-chart-poc/static/media/undraw_web-app_141a.87fd4478c20e036dc257eb3685667f7f.svg",
     "index.html": "/project-plan-flow-chart-poc/index.html",
     "main.616ba065.css.map": "/project-plan-flow-chart-poc/static/css/main.616ba065.css.map",
-    "main.7d43a47a.js.map": "/project-plan-flow-chart-poc/static/js/main.7d43a47a.js.map",
+    "main.db9c1650.js.map": "/project-plan-flow-chart-poc/static/js/main.db9c1650.js.map",
     "453.e3fe0cc6.chunk.js.map": "/project-plan-flow-chart-poc/static/js/453.e3fe0cc6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.616ba065.css",
-    "static/js/main.7d43a47a.js"
+    "static/js/main.db9c1650.js"
   ]
 }
