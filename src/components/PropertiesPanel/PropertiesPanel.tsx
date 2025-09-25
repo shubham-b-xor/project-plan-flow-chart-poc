@@ -36,7 +36,7 @@ import EmptyState from '../common/EmptyState';
 import PanelHeader from '../common/PanelHeader';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setPropertiesPanelOpen, clearSelection } from '../../store/selectionSlice';
-import { updateNodeUIOption, updateNodeUIOptionProperty, reorderNodeUIOptions, addNodeUIOption, removeNodeUIOption, removeNode } from '../../store/nodesSlice';
+import { updateNodeUIOption, updateNodeUIOptionProperty, reorderNodeUIOptions, addNodeUIOption, removeNodeUIOption, removeNode, updateNodeLabel, updateNodeDescription } from '../../store/nodesSlice';
 import { updateEdgeLabel, updateEdgeType, removeEdge } from '../../store/edgesSlice';
 import { markDirty } from '../../store/projectSlice';
 import { UIOption, EdgeType, InputType } from '../../types';
@@ -229,6 +229,16 @@ const PropertiesPanel: React.FC = () => {
     }
   };
 
+  if (!propertiesPanelOpen) {
+    return (
+      <Box sx={{ width: PROPERTIES_PANEL_WIDTH, height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.paper', borderLeft: '1px solid', borderColor: 'divider' }}>
+        <Typography variant="body1" color="text.secondary" align="center">
+          Select node to edit properties
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <>
       <Drawer
@@ -251,7 +261,6 @@ const PropertiesPanel: React.FC = () => {
           <PanelHeader title="Properties" onClose={handleClose} />
           <Divider />
         </Box>
-
         <Box sx={{ overflow: 'auto', flex: 1, p: 2 }}>
           {selectedNode && (
             <Box>
@@ -269,7 +278,13 @@ const PropertiesPanel: React.FC = () => {
                   fullWidth
                   size="small"
                   sx={{ mb: 2 }}
-                  disabled
+                  onChange={e => {
+                    dispatch(updateNodeLabel({
+                      id: selectedNodeId!,
+                      label: e.target.value
+                    }));
+                    dispatch(markDirty());
+                  }}
                 />
                 <TextField
                   label="Description"
@@ -279,7 +294,13 @@ const PropertiesPanel: React.FC = () => {
                   rows={3}
                   size="small"
                   sx={{ mb: 2 }}
-                  disabled
+                  onChange={e => {
+                    dispatch(updateNodeDescription({
+                      id: selectedNodeId!,
+                      description: e.target.value
+                    }));
+                    dispatch(markDirty());
+                  }}
                 />
               </SectionAccordion>
               <SectionAccordion
@@ -327,7 +348,6 @@ const PropertiesPanel: React.FC = () => {
               </SectionAccordion>
             </Box>
           )}
-
           {selectedEdge && (
             <Box>
               <PanelHeader
@@ -398,12 +418,10 @@ const PropertiesPanel: React.FC = () => {
               </SectionAccordion>
             </Box>
           )}
-
           {!selectedNode && !selectedEdge && (
             <EmptyState message="Select a node or edge to view its properties" />
           )}
         </Box>
-
         <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
           <Button
             variant="contained"
@@ -418,7 +436,6 @@ const PropertiesPanel: React.FC = () => {
           </Button>
         </Box>
       </Drawer>
-      
       <ConfirmDialog
         open={confirmDialog.open}
         title={confirmDialog.title}

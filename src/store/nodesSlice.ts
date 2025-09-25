@@ -48,6 +48,28 @@ const nodesSlice = createSlice({
         node.position = position;
       }
     },
+
+    updateNodeLabel: (state, action: PayloadAction<{ 
+      id: string; 
+      label: string
+    }>) => {
+      const { id, label } = action.payload;
+      const node = state.nodes.find((n: any) => n.config.id === id);
+      if (node) {
+        node.config.label = label;
+      }
+    },
+
+    updateNodeDescription: (state, action: PayloadAction<{ 
+      id: string; 
+      description: string
+    }>) => {
+      const { id, description } = action.payload;
+      const node = state.nodes.find((n: any) => n.config.id === id);
+      if (node) {
+        node.config.description = description;
+      }
+    },
     
     updateNodeUIOption: (state, action: PayloadAction<{
       nodeId: string;
@@ -154,6 +176,8 @@ export const {
   addNode,
   removeNode,
   updateNodePosition,
+  updateNodeLabel,
+  updateNodeDescription,
   updateNodeUIOption,
   updateNodeUIOptionProperty,
   reorderNodeUIOptions,

@@ -44,11 +44,44 @@ interface CanvasProps {
 }
 
 const Canvas: React.FC<CanvasProps> = ({ sidebarWidth }) => {
+
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const copiedNodeRef = useRef<any>(null);
+
   const dispatch = useAppDispatch();
   const { nodes: nodeData } = useAppSelector((state) => state.nodes);
   const { edges: edgeData } = useAppSelector((state) => state.edges);
   const { selectedNodeId, selectedEdgeId } = useAppSelector((state) => state.selection);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key.toLowerCase() === 'c' && selectedNodeId) {
+        // Copy selected node
+        const node = nodeData.find(n => n.config.id === selectedNodeId);
+        if (node) {
+          copiedNodeRef.current = JSON.parse(JSON.stringify(node));
+        }
+      }
+      if (e.ctrlKey && e.key.toLowerCase() === 'v' && copiedNodeRef.current) {
+        // Paste node with new id and offset position
+        const node = copiedNodeRef.current;
+        const newId = `${node.config.id}-copy-${Date.now()}`;
+        const offset = 40;
+        const newPosition = {
+          x: node.position.x + offset,
+          y: node.position.y + offset
+        };
+        dispatch(addNode({
+          configId: node.config.id.startsWith('blank') ? 'blank' : node.config.id.split('-')[0],
+          position: newPosition,
+          id: newId
+        }));
+        dispatch(markDirty());
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedNodeId, nodeData, dispatch]);
 
   const nodes: Node<CustomNodeData>[] = React.useMemo(() => 
     nodeData.map((nodeItem, index) => ({
@@ -59,6 +92,37 @@ const Canvas: React.FC<CanvasProps> = ({ sidebarWidth }) => {
       selected: selectedNodeId === nodeItem.config.id
     })), [nodeData, selectedNodeId]
   );
+
+  // Handle copy (Ctrl+C) and paste (Ctrl+V) for nodes
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key.toLowerCase() === 'c' && selectedNodeId) {
+        // Copy selected node
+        const node = nodeData.find(n => n.config.id === selectedNodeId);
+        if (node) {
+          copiedNodeRef.current = JSON.parse(JSON.stringify(node));
+        }
+      }
+      if (e.ctrlKey && e.key.toLowerCase() === 'v' && copiedNodeRef.current) {
+        // Paste node with new id and offset position
+        const node = copiedNodeRef.current;
+        const newId = `${node.config.id}-copy-${Date.now()}`;
+        const offset = 40;
+        const newPosition = {
+          x: node.position.x + offset,
+          y: node.position.y + offset
+        };
+        dispatch(addNode({
+          configId: node.config.id.startsWith('blank') ? 'blank' : node.config.id.split('-')[0],
+          position: newPosition,
+          id: newId
+        }));
+        dispatch(markDirty());
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedNodeId, nodeData, dispatch]);
 
   const edges: Edge[] = React.useMemo(() => 
     edgeData.map((edge) => ({
