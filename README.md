@@ -1,46 +1,104 @@
-# ReactFlow Designer Application
+# Project Plan Flow Chart Designer
 
-A comprehensive React-based flow designer application built with TypeScript, Redux, MUI, and ReactFlow for creating custom UI node workflows.
+![ReactFlow Designer Banner](./public/logo192.png)
 
-## Available Scripts
+A modern, interactive flow chart designer for project planning, built with React, TypeScript, Redux Toolkit, Material-UI, and ReactFlow.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🚀 Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Drag-and-drop Node Creation**: Build custom workflows visually
+- **Customizable Nodes & Edges**: Rich node types, edge styles, and labels
+- **Properties Panel**: Edit node/edge properties in a collapsible side panel
+- **Sidebar & TopBar**: Quick access to node types, project actions, and settings
+- **Undo/Redo & Selection**: Intuitive editing with multi-select and keyboard shortcuts
+- **Export & Import**: Save your flow as JSON or image, and reload anytime
+- **Responsive & Themed UI**: Beautiful Material-UI design, dark/light support
+- **Redux State Management**: All state managed globally for scalability
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+---
 
-### `npm test`
+## 🛠️ Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [ReactFlow](https://reactflow.dev/) for diagramming
+- [Redux Toolkit](https://redux-toolkit.js.org/) for state
+- [Material-UI (MUI)](https://mui.com/) for UI components
+- [Dnd Kit](https://dndkit.com/) for drag-and-drop
+- [html-to-image](https://github.com/bubkoo/html-to-image) for export
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📦 Getting Started
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. **Clone the repository**
+   ```sh
+   git clone https://github.com/shubham-b-xor/project-plan-flow-chart-poc.git
+   cd project-plan-flow-chart-poc/ReactFlow
+   ```
+2. **Install dependencies**
+   ```sh
+   npm install
+   ```
+3. **Start the development server**
+   ```sh
+   npm start
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🖱️ Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- **Add Nodes**: Drag node types from the sidebar onto the canvas
+- **Connect Nodes**: Drag from one node handle to another
+- **Edit Properties**: Select a node/edge and use the properties panel
+- **Save/Load**: Use the TopBar to export/import your flow
+- **Customize**: Change node labels, descriptions, and UI options
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 📁 Project Structure
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+ReactFlow/
+├── public/           # Static assets
+├── src/
+│   ├── components/   # Modular React components
+│   ├── store/        # Redux slices & hooks
+│   ├── config/       # Node/edge configs
+│   ├── types/        # TypeScript types
+│   ├── assets/       # Images & SVGs
+│   └── utils/        # Utility functions
+├── package.json
+└── README.md
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🤝 Contributing
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Contributions, issues, and feature requests are welcome!
+
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes (`git commit -am 'Add new feature'`)
+4. Push to the branch (`git push origin feature/YourFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 🌐 Live Demo
+
+[Project Plan Flow Chart Designer (GitHub Pages)](https://shubham-b-xor.github.io/project-plan-flow-chart-poc)
+
+---
+
+> Made with ❤️ using React, Redux, and ReactFlow.
