@@ -56,14 +56,12 @@ const Canvas: React.FC<CanvasProps> = ({ sidebarWidth }) => {
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key.toLowerCase() === 'c' && selectedNodeId) {
-        // Copy selected node
         const node = nodeData.find(n => n.config.id === selectedNodeId);
         if (node) {
           copiedNodeRef.current = JSON.parse(JSON.stringify(node));
         }
       }
       if (e.ctrlKey && e.key.toLowerCase() === 'v' && copiedNodeRef.current) {
-        // Paste node with new id and offset position
         const node = copiedNodeRef.current;
         const newId = `${node.config.id}-copy-${Date.now()}`;
         const offset = 40;
@@ -93,18 +91,15 @@ const Canvas: React.FC<CanvasProps> = ({ sidebarWidth }) => {
     })), [nodeData, selectedNodeId]
   );
 
-  // Handle copy (Ctrl+C) and paste (Ctrl+V) for nodes
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key.toLowerCase() === 'c' && selectedNodeId) {
-        // Copy selected node
         const node = nodeData.find(n => n.config.id === selectedNodeId);
         if (node) {
           copiedNodeRef.current = JSON.parse(JSON.stringify(node));
         }
       }
       if (e.ctrlKey && e.key.toLowerCase() === 'v' && copiedNodeRef.current) {
-        // Paste node with new id and offset position
         const node = copiedNodeRef.current;
         const newId = `${node.config.id}-copy-${Date.now()}`;
         const offset = 40;
@@ -137,19 +132,16 @@ const Canvas: React.FC<CanvasProps> = ({ sidebarWidth }) => {
       markerEnd: edge.type === 'directional' ? { type: MarkerType.ArrowClosed } : undefined,
       style: edge.type === 'dashed' ? { strokeDasharray: '5,5' } : undefined,
       selected: selectedEdgeId === edge.id,
-      data: { type: edge.type } // Pass the actual edge type in data
     })), [edgeData, selectedEdgeId]
   );
 
   const [reactFlowNodes, setNodes, onNodesChange] = useNodesState([]);
   const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  // Update ReactFlow nodes when Redux state changes
   React.useEffect(() => {
     setNodes(nodes);
   }, [nodes, setNodes]);
 
-  // Update ReactFlow edges when Redux state changes
   React.useEffect(() => {
     setEdges(edges);
   }, [edges, setEdges]);
@@ -163,9 +155,9 @@ const Canvas: React.FC<CanvasProps> = ({ sidebarWidth }) => {
           target: connection.target,
           sourceHandle: connection.sourceHandle || undefined,
           targetHandle: connection.targetHandle || undefined,
-          type: 'directional', // Default edge type
           label: '',
-          animated: false
+          animated: false,
+          type: 'directional'
         };
         dispatch(addEdgeAction(newEdge));
         dispatch(markDirty());
@@ -209,10 +201,9 @@ const Canvas: React.FC<CanvasProps> = ({ sidebarWidth }) => {
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const position = {
         x: event.clientX - reactFlowBounds.left - sidebarWidth,
-        y: event.clientY - reactFlowBounds.top - 100, // Account for top bar height
+        y: event.clientY - reactFlowBounds.top - 100
       };
 
-      // Create a unique ID for this node instance
       const newNodeId = `${nodeConfigId}-${Date.now()}`;
       dispatch(addNode({
         configId: nodeConfigId,

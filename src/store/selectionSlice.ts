@@ -36,11 +36,10 @@ const selectionSlice = createSlice({
     
     setPropertiesPanelOpen: (state, action: PayloadAction<boolean>) => {
       state.propertiesPanelOpen = action.payload;
-      if (!action.payload) {
-        // If closing properties panel, also clear selection
-        state.selectedNodeId = null;
-        state.selectedEdgeId = null;
-      }
+    },
+    
+    togglePropertiesPanel: (state) => {
+      state.propertiesPanelOpen = !state.propertiesPanelOpen;
     }
   }
 });
@@ -49,7 +48,8 @@ export const {
   selectNode,
   selectEdge,
   clearSelection,
-  setPropertiesPanelOpen
+  setPropertiesPanelOpen,
+  togglePropertiesPanel
 } = selectionSlice.actions;
 
 export default selectionSlice.reducer;

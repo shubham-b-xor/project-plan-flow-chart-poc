@@ -23,7 +23,6 @@ export const UIOptionRenderer: React.FC<UIOptionRendererProps> = ({
   };
 
   const handleButtonClick = () => {
-    // Button clicks can trigger custom actions
     console.log(`Button clicked: ${option.label}`);
   };
 
@@ -37,7 +36,6 @@ export const UIOptionRenderer: React.FC<UIOptionRendererProps> = ({
         <TextField
           variant={'standard'}
           label={option.label}
-        //   placeholder={option.uiText}
           placeholder={''}
           value={option.value as string || ''}
           onChange={handleChange}

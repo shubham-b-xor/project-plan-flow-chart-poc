@@ -9,19 +9,17 @@ import {
     IconButton,
     Menu,
     MenuItem,
-    // Chip
 } from '@mui/material';
 import ConfirmDialog from '../common/ConfirmDialog';
 import {
     FileDownload,
     FileUpload,
-    Menu as MenuIcon,
     Image,
     Description,
     FiberNew
 } from '@mui/icons-material';
+import ViewSidebarIcon from '@mui/icons-material/ViewSidebar';
 import { saveAs } from 'file-saver';
-// import html2canvas from 'html2canvas';
 import * as htmlToImage from "html-to-image";
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setProjectName, markSaved, resetProject, loadProject } from '../../store/projectSlice';
@@ -45,7 +43,6 @@ const downloadImage = (dataUrl: string, fileName: string) => {
 const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, sidebarOpen }) => {
     const dispatch = useAppDispatch();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    // const reactFlowWrapper = useRef<HTMLDivElement>(null);
     const [exportMenuAnchor, setExportMenuAnchor] = React.useState<null | HTMLElement>(null);
     const [importMenuAnchor, setImportMenuAnchor] = React.useState<null | HTMLElement>(null);
 
@@ -83,23 +80,9 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, sidebarOpen }) => {
         }
 
         try {
-            // const canvas = await html2canvas(canvasElement, {
-            //     backgroundColor: '#ffffff',
-            //     scale: 5,
-            //     logging: false,
-            //     allowTaint: true,
-            //     useCORS: true
-            // });
-
-            // canvas.toBlob((blob) => {
-            //     if (blob) {
-            //         saveAs(blob, `${projectName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.png`);
-            //     }
-            // }, 'image/png');
 
 
-            // console.log('rw: ',reactFlowWrapper)
-            // if (!reactFlowWrapper.current) return;
+
 
             const wrapper = document.querySelector(".react-flow") as HTMLElement;
             console.log('w: ', wrapper)
@@ -132,24 +115,20 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, sidebarOpen }) => {
             try {
                 const projectData = JSON.parse(e.target?.result as string);
 
-                // Validate the project data structure
                 if (!projectData.nodes || !projectData.edges) {
                     alert('Invalid project file format. Missing nodes or edges data.');
                     return;
                 }
 
-                // Clear current data
                 dispatch(clearNodes());
                 dispatch(clearEdges());
                 dispatch(clearSelection());
 
-                // Load project metadata
                 dispatch(loadProject({
                     projectName: projectData.projectName || 'Imported Project',
                     lastSaved: projectData.exportedAt
                 }));
 
-                // Load nodes and edges
                 dispatch(setNodes(projectData.nodes || []));
                 dispatch(setEdges(projectData.edges || []));
 
@@ -188,12 +167,6 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, sidebarOpen }) => {
         dispatch(clearSelection());
     };
 
-    // const formatLastSaved = (lastSaved: string | null) => {
-    //     if (!lastSaved) return 'Never saved';
-    //     const date = new Date(lastSaved);
-    //     return `Saved ${date.toLocaleTimeString()}`;
-    // };
-
     return (
         <>
             <AppBar
@@ -209,13 +182,13 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuToggle, sidebarOpen }) => {
             >
                 <Toolbar>
                     <IconButton
-                        color="inherit"
+                        color="info"
                         aria-label="toggle sidebar"
                         onClick={onMenuToggle}
                         edge="start"
                         sx={{ mr: 2 }}
                     >
-                        <MenuIcon />
+                        <ViewSidebarIcon />
                     </IconButton>
 
                     <Typography

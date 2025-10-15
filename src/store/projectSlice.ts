@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ProjectState {
   projectName: string;
-  isDirty: boolean; // Track if project has unsaved changes
   lastSaved: string | null;
+  isDirty: boolean;
 }
 
 const initialState: ProjectState = {

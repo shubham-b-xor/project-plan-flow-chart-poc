@@ -16,7 +16,6 @@ import { useAppDispatch } from '../../store/hooks';
 import { removeNode } from '../../store/nodesSlice';
 import { markDirty } from '../../store/projectSlice';
 
-// ✅ Reusable dual handle (source + target overlap, looks like one)
 const DualHandle = ({ position, id }: { position: Position; id: string }) => (
   <>
     <Handle
@@ -38,7 +37,6 @@ const DualHandle = ({ position, id }: { position: Position; id: string }) => (
       position={position}
       id={`${id}-target`}
       style={{
-        background: 'transparent', // invisible, still works
         width: 12,
         height: 12,
         borderRadius: '50%',

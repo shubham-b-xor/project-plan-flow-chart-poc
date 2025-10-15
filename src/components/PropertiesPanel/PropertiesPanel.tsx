@@ -1,34 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import {
-  Drawer,
-  Box,
-  Typography,
-  IconButton,
-  Divider,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormControlLabel,
-  Checkbox,
-  Button,
-} from '@mui/material';
-import { Close, ExpandMore, Save, Delete, DragHandle } from '@mui/icons-material';
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { Drawer, Box, Typography, Divider, TextField, FormControl, Select, MenuItem, Button, InputLabel } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import SortableUIOption from '../UIOptions/SortableUIOption';
 import SectionAccordion from '../common/SectionAccordion';
 import ConfirmDialog from '../common/ConfirmDialog';
@@ -39,11 +11,12 @@ import { setPropertiesPanelOpen, clearSelection } from '../../store/selectionSli
 import { updateNodeUIOption, updateNodeUIOptionProperty, reorderNodeUIOptions, addNodeUIOption, removeNodeUIOption, removeNode, updateNodeLabel, updateNodeDescription } from '../../store/nodesSlice';
 import { updateEdgeLabel, updateEdgeType, removeEdge } from '../../store/edgesSlice';
 import { markDirty } from '../../store/projectSlice';
-import { UIOption, EdgeType, InputType } from '../../types';
+import { UIOption, EdgeType } from '../../types';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
-const PROPERTIES_PANEL_WIDTH = 320;
+const PROPERTIES_PANEL_WIDTH = 350;
 
-// Confirmation Dialog State Type
 interface ConfirmDialogState {
   open: boolean;
   title: string;
@@ -60,20 +33,19 @@ const PropertiesPanel: React.FC = () => {
   const { nodes } = useAppSelector((state) => state.nodes);
   const { edges } = useAppSelector((state) => state.edges);
 
-  const selectedNode = selectedNodeId 
+  const selectedNode = selectedNodeId
     ? nodes.find(node => node.config.id === selectedNodeId)
     : null;
-  
-  const selectedEdge = selectedEdgeId 
+
+  const selectedEdge = selectedEdgeId
     ? edges.find(edge => edge.id === selectedEdgeId)
     : null;
 
-  // --- Confirmation Dialog State and Handlers ---
   const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>({
     open: false,
     title: '',
     message: '',
-    onConfirm: () => {},
+    onConfirm: () => { },
   });
 
   const handleOpenConfirmDialog = (title: string, message: string, onConfirm: () => void) => {
@@ -88,12 +60,10 @@ const PropertiesPanel: React.FC = () => {
     confirmDialog.onConfirm();
     handleCloseConfirmDialog();
   };
-  // ---------------------------------------------
 
 
   const handleClose = () => {
     dispatch(setPropertiesPanelOpen(false));
-    dispatch(clearSelection());
   };
 
   const handleNodeUIOptionChange = (optionIndex: number, value: string | boolean) => {
@@ -108,8 +78,8 @@ const PropertiesPanel: React.FC = () => {
   };
 
   const handleNodeUIOptionPropertyChange = (
-    optionIndex: number, 
-    property: keyof UIOption, 
+    optionIndex: number,
+    property: keyof UIOption,
     value: any
   ) => {
     if (selectedNodeId) {
@@ -190,7 +160,7 @@ const PropertiesPanel: React.FC = () => {
       () => performDeleteUIOption(optionIndex)
     );
   };
-  
+
   // Drag and drop sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -229,33 +199,32 @@ const PropertiesPanel: React.FC = () => {
     }
   };
 
-  if (!propertiesPanelOpen) {
-    return (
-      <Box sx={{ width: PROPERTIES_PANEL_WIDTH, height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.paper', borderLeft: '1px solid', borderColor: 'divider' }}>
-        <Typography variant="body1" color="text.secondary" align="center">
-          Select node to edit properties
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <>
       <Drawer
         anchor="right"
         open={propertiesPanelOpen}
-        variant="persistent"
+        variant="temporary"
+        ModalProps={{
+          keepMounted: true,
+          BackdropProps: {
+            invisible: true,
+          },
+        }}
         sx={{
-          width: PROPERTIES_PANEL_WIDTH,
-          flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: PROPERTIES_PANEL_WIDTH,
             boxSizing: 'border-box',
             bgcolor: 'background.paper',
             borderLeft: '1px solid',
             borderColor: 'divider',
+            position: 'fixed',
+            top: 64,
+            height: 'calc(100vh - 64px)',
+            boxShadow: 3,
           },
         }}
+        onClose={handleClose}
       >
         <Box sx={{ p: 2 }}>
           <PanelHeader title="Properties" onClose={handleClose} />
@@ -277,7 +246,7 @@ const PropertiesPanel: React.FC = () => {
                   value={selectedNode.config.label}
                   fullWidth
                   size="small"
-                  sx={{ mb: 2 }}
+                  sx={{ mb: 2, fontSize: '0.9rem' }}
                   onChange={e => {
                     dispatch(updateNodeLabel({
                       id: selectedNodeId!,
@@ -347,7 +316,8 @@ const PropertiesPanel: React.FC = () => {
                 )}
               </SectionAccordion>
             </Box>
-          )}
+          )
+          }
           {selectedEdge && (
             <Box>
               <PanelHeader
@@ -401,16 +371,16 @@ const PropertiesPanel: React.FC = () => {
                   <Typography variant="body2" color="text.secondary">
                     <strong>Source Node:</strong> {selectedEdge.source}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.9rem' }}>
                     <strong>Target Node:</strong> {selectedEdge.target}
                   </Typography>
                   {selectedEdge.sourceHandle && (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.9rem' }}>
                       <strong>Source Handle:</strong> {selectedEdge.sourceHandle}
                     </Typography>
                   )}
                   {selectedEdge.targetHandle && (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.9rem' }}>
                       <strong>Target Handle:</strong> {selectedEdge.targetHandle}
                     </Typography>
                   )}
@@ -418,11 +388,15 @@ const PropertiesPanel: React.FC = () => {
               </SectionAccordion>
             </Box>
           )}
-          {!selectedNode && !selectedEdge && (
-            <EmptyState message="Select a node or edge to view its properties" />
+          {(!selectedEdge && !selectedNode) && (
+            <Box sx={{ width: "100%", height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.paper', }}>
+              <Typography variant="body1" color="text.secondary" align="center" sx={{ fontSize: '0.9rem' }}>
+                Select node to edit properties
+              </Typography>
+            </Box>
           )}
         </Box>
-        
+
       </Drawer>
       <ConfirmDialog
         open={confirmDialog.open}

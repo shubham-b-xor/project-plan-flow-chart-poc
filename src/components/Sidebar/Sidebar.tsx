@@ -14,7 +14,6 @@ import {
   AccordionDetails,
   TextField,
   FormControl,
-  InputLabel,
   Select,
   MenuItem
 } from '@mui/material';
@@ -31,12 +30,12 @@ import {
   Error,
   ExpandMore
 } from '@mui/icons-material';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { nodeConfigs, getAllNodeTypes } from '../../config/nodeConfigs';
 import { NodeConfig } from '../../types';
 
-const SIDEBAR_WIDTH = 320;
+const SIDEBAR_WIDTH = 250;
 
-// Icon mapping for different node types
 const getNodeIcon = (nodeId: string) => {
   const iconMap: { [key: string]: React.ReactElement } = {
     login: <Login />,
@@ -53,7 +52,6 @@ const getNodeIcon = (nodeId: string) => {
   return iconMap[nodeId] || <Description />;
 };
 
-// Color mapping for different node types
 const getTypeColor = (type: string): "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning" => {
   const colorMap: { [key: string]: "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning" } = {
     auth: 'primary',
@@ -77,7 +75,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
 
-  // Filtered node configs based on search and type
   const filteredNodeConfigs = useMemo(() => {
     return nodeConfigs.filter(config => {
       const matchesType = typeFilter === 'all' || config.type === typeFilter;
@@ -88,7 +85,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
     });
   }, [search, typeFilter]);
 
-  // Get types present in filtered nodes (for accordion rendering)
   const filteredTypes = useMemo(() => {
     return nodeTypes.filter(type =>
       filteredNodeConfigs.some(config => config.type === type)
@@ -110,43 +106,74 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
       anchor="left"
       open={open}
       sx={{
-        width: SIDEBAR_WIDTH,
+        width: open ? SIDEBAR_WIDTH : 0,
         flexShrink: 0,
+        transition: (theme) => theme.transitions.create('width', {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.standard,
+        }),
         '& .MuiDrawer-paper': {
           width: SIDEBAR_WIDTH,
           boxSizing: 'border-box',
           bgcolor: 'background.paper',
           borderRight: '1px solid',
           borderColor: 'divider',
+          transition: (theme) => theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.standard,
+          }),
         },
+        overflowX: 'hidden',
       }}
     >
-      <Box sx={{ p: 2, marginTop: 8 }}>
+      <Box sx={{ p: 2, marginTop: 8, overflowX: 'hidden' }}>
         <Typography variant="body1" component="div" sx={{ mb: 0, fontWeight: 'bold' }}>
-          Node Library
+          <Typography variant="body1" component="div" sx={{ mb: 0, fontWeight: 'bold', fontSize: '1rem' }}>
+            Node Library
+          </Typography>
         </Typography>
         <Typography variant="caption" color="text.secondary" sx={{ mb: 2, mt: 0 }}>
-          Drag nodes to the canvas to build your flow
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 2, mt: 0, fontSize: '0.75rem' }}>
+            Drag nodes to the canvas.
+          </Typography>
         </Typography>
         <Box sx={{ display: 'flex', gap: 1, mt: 2, mb: 1 }}>
           <TextField
             size="small"
-            placeholder="Search nodes..."
+            placeholder="Search nodes"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            sx={{ flex: 2 }}
+            sx={{ flex: 2, fontSize: '0.8rem' }}
             variant="outlined"
           />
-          <FormControl size="small" sx={{ minWidth: 120, flex: 1 }}>
-            <InputLabel>Type</InputLabel>
+            <FormControl size="small" sx={{ minWidth: 32, width: 32, maxWidth: 32, fontSize: '0.9rem', padding: 0 }}>
             <Select
               value={typeFilter}
-              label="Type"
+              size='small'
               onChange={e => setTypeFilter(e.target.value)}
+                sx={{
+                  fontSize: '0.8rem',
+                  border: 'none',
+                  outline: 'none',
+                  boxShadow: 'none',
+                  background: 'none',
+                  padding: 0,
+                  minHeight: 0,
+                  width: 55,
+                  maxWidth: 55,
+                  '& fieldset': { border: 'none' },
+                  '&:focus': { outline: 'none', border: 'none', boxShadow: 'none' },
+                  '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                  '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                  '& .MuiSelect-select': { padding: 0, minHeight: 0, width: 32, maxWidth: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+                }}
+              displayEmpty
+              renderValue={() => <FilterListIcon />}
             >
-              <MenuItem value="all">All Types</MenuItem>
+              <MenuItem value="all">All</MenuItem>
               {nodeTypes.map(type => (
-                <MenuItem key={type} value={type}>{type}</MenuItem>
+                <MenuItem key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -157,7 +184,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
       <Box sx={{ overflow: 'auto', flex: 1 }}>
         {filteredTypes.length === 0 ? (
           <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
-            No nodes found.
+            <Typography variant="body2" color="text.secondary" sx={{ p: 2, fontSize: '0.9rem' }}>
+              No nodes found.
+            </Typography>
           </Typography>
         ) : (
           filteredTypes.map((type) => (
@@ -171,10 +200,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
                   }
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 'medium', textTransform: 'capitalize' }}>
-                    {type}
-                  </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 'medium', textTransform: 'capitalize', fontSize: '1rem' }}>
+                      {type}
+                    </Typography>
                   <Chip
                     label={getNodesByType(type).length}
                     size="small"
@@ -207,15 +236,19 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
                       <ListItemText
                         primary={
                           <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                            {nodeConfig.label}
+                            <Typography variant="body2" sx={{ fontWeight: 'medium', fontSize: '0.9rem' }}>
+                              {nodeConfig.label}
+                            </Typography>
                           </Typography>
                         }
                         secondary={
                           <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
-                            {nodeConfig.description.length > 50
-                              ? `${nodeConfig.description.substring(0, 50)}...`
-                              : nodeConfig.description
-                            }
+                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                              {nodeConfig.description.length > 50
+                                ? `${nodeConfig.description.substring(0, 50)}...`
+                                : nodeConfig.description
+                              }
+                            </Typography>
                           </Typography>
                         }
                       />
@@ -228,9 +261,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
         )}
       </Box>
 
-      <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
+      <Box sx={{ p: 1, bgcolor: 'grey.50' }}>
         <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center' }}>
-          {nodeConfigs.length} nodes available
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', fontSize: '0.7rem' }}>
+            {nodeConfigs.length} nodes available
+          </Typography>
         </Typography>
       </Box>
     </Drawer>
